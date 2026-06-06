@@ -39,7 +39,7 @@ with col1:
 
     jenis_demam = st.selectbox(
         "Jenis Demam",
-        ["Demam Ringan", "Demam Sedang", "Demam Tinggi"]
+        ["DBD", "DD", "DSS"]
     )
 
 with col2:
@@ -70,14 +70,14 @@ with col2:
 # SESUAIKAN DENGAN ENCODING SAAT TRAINING
 
 jk_mapping = {
-    "Laki-laki": 1,
-    "Perempuan": 0
+    "Laki-laki": 0,
+    "Perempuan": 1
 }
 
 demam_mapping = {
-    "Demam Ringan": 0,
-    "Demam Sedang": 1,
-    "Demam Tinggi": 2
+    "DBD": 0,
+    "DD": 1,
+    "DSS": 2
 }
 
 input_data = pd.DataFrame({
@@ -97,6 +97,28 @@ if st.button("Prediksi"):
     rf_pred = rf_model.predict(input_data)[0]
     knn_pred = knn_model.predict(input_data)[0]
     svm_pred = svm_model.predict(input_data)[0]
+
+    predictions = [rf_pred, knn_pred, svm_pred]
+
+    majority_vote = max(set(predictions), key=predictions.count)
+
+    label_mapping = {
+        0: "Pendek",
+        1: "Panjang"
+    }
+
+    rf_label = label_mapping[rf_pred]
+    knn_label = label_mapping[knn_pred]
+    svm_label = label_mapping[svm_pred]
+
+    majority_vote_label = label_mapping[majority_vote]
+
+    vote_prob = predictions.count(majority_vote) / len(predictions) * 100
+
+    st.subheader("Hasil Majority Voting")
+    st.success(f"Hasil Akhir: **{majority_vote_label}**")
+    st.info(f"Probabilitas Voting: **{vote_prob:.2f}%**")
+
 
     try:
         rf_prob = rf_model.predict_proba(input_data).max() * 100
@@ -119,22 +141,31 @@ if st.button("Prediksi"):
 
     with col1:
         st.success("Random Forest")
-        st.write(f"Prediksi : **{rf_pred}**")
+        st.write(f"Prediksi : **{rf_label}**")
         if rf_prob:
             st.write(f"Probabilitas : **{rf_prob:.2f}%**")
 
     with col2:
         st.info("KNN")
-        st.write(f"Prediksi : **{knn_pred}**")
+        st.write(f"Prediksi : **{knn_label}**")
         if knn_prob:
             st.write(f"Probabilitas : **{knn_prob:.2f}%**")
 
     with col3:
         st.warning("SVM")
-        st.write(f"Prediksi : **{svm_pred}**")
+        st.write(f"Prediksi : **{svm_label}**")
         if svm_prob:
             st.write(f"Probabilitas : **{svm_prob:.2f}%**")
 
     st.subheader("Data Input")
 
-    st.dataframe(input_data)
+    display_data = pd.DataFrame({
+        "Jenis Kelamin": [jenis_kelamin],
+        "Umur": [umur],
+        "Jenis Demam": [jenis_demam],
+        "Hemoglobin": [hemoglobin],
+        "HCT": [hct],
+        "Trombosit": [trombosit]
+    })
+
+    st.dataframe(display_data)
