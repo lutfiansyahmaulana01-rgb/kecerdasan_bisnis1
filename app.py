@@ -117,7 +117,7 @@ if st.button("Prediksi"):
 
     st.subheader("Hasil Majority Voting")
     st.success(f"Hasil Akhir: **{majority_vote_label}**")
-    st.info(f"Probabilitas Voting: **{vote_prob:.2f}%**")
+    st.info(f"Persentase Confidence Voting: **{vote_prob:.2f}%**")
 
 
     try:
@@ -143,19 +143,19 @@ if st.button("Prediksi"):
         st.success("Random Forest")
         st.write(f"Prediksi : **{rf_label}**")
         if rf_prob:
-            st.write(f"Probabilitas : **{rf_prob:.2f}%**")
+            st.write(f"Confidence : **{rf_prob:.2f}%**")
 
     with col2:
         st.info("KNN")
         st.write(f"Prediksi : **{knn_label}**")
         if knn_prob:
-            st.write(f"Probabilitas : **{knn_prob:.2f}%**")
+            st.write(f"Confidence : **{knn_prob:.2f}%**")
 
     with col3:
         st.warning("SVM")
         st.write(f"Prediksi : **{svm_label}**")
         if svm_prob:
-            st.write(f"Probabilitas : **{svm_prob:.2f}%**")
+            st.write(f"Confidence : **{svm_prob:.2f}%**")
 
     st.subheader("Data Input")
 
